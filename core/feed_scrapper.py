@@ -6,11 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from config import (
-    LINKEDIN_FEED_URL, 
-    MAX_POSTS_TO_SCRAPE, 
+    LINKEDIN_FEED_URL,
+    MAX_POSTS_TO_SCRAPE,
     MAX_SCROLL_ITERATIONS,
     MIN_SCROLL_DELAY,
-    MAX_SCROLL_DELAY
+    MAX_SCROLL_DELAY,
+    TARGET_KEYWORDS
 )
 
 class FeedScraper:
@@ -137,6 +138,22 @@ class FeedScraper:
                 except NoSuchElementException:
                     post_text = ""
 
+            # Extract author headline (required for ICP filtering)
+            author_headline = ""
+            try:
+                headline_elem = post_element.find_element(
+                    By.CSS_SELECTOR, ".update-components-actor__description"
+                )
+                author_headline = headline_elem.text.strip()
+            except NoSuchElementException:
+                try:
+                    headline_elem = post_element.find_element(
+                        By.CSS_SELECTOR, ".feed-shared-actor__subtitle"
+                    )
+                    author_headline = headline_elem.text.strip()
+                except NoSuchElementException:
+                    author_headline = ""
+
             # Extract post URL
             try:
                 post_url_element = post_element.find_element(By.CSS_SELECTOR, ".feed-shared-update-v2__update-link-container a")
@@ -152,6 +169,7 @@ class FeedScraper:
             return {
                 "post_id": post_id,
                 "author_name": author_name,
+                "author_headline": author_headline,
                 "author_link": author_link,
                 "post_text": post_text,
                 "post_url": post_url,
