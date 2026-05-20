@@ -11,6 +11,7 @@ Security hardening:
 
 New modules:
   - ReplyTracker: monitors posts you've commented on for new replies
+  - ContactManager: persistent ICP contact database with priority scoring
 """
 
 from .auth import LinkedInAuth
@@ -20,6 +21,7 @@ from .action_engine import ActionEngine
 from .connect import LinkedInConnect
 from .messenger import LinkedInMessenger
 from .reply_tracker import ReplyTracker
+from .contact_manager import ContactManager
 
 __all__ = [
     'LinkedInAuth',
@@ -29,4 +31,5 @@ __all__ = [
     'LinkedInConnect',
     'LinkedInMessenger',
     'ReplyTracker',
+    'ContactManager',
 ]
