@@ -7,11 +7,12 @@ Modes:
   --mode feed       Analyze feed, filter by ICP, engage with target audience
   --mode replies    Check posts you've commented on for new replies
   --mode priority   Show daily priority engagement list (no browser)
+  --mode sync       Sync contact database to Google Sheets (no browser)
   --mode full       Feed + replies (complete cycle)
   --mode stats      Contact database statistics (no browser)
   --mode contact    View/tag/note individual contacts (no browser)
 
-Search (new):
+Search:
   --search \"query\"               Search LinkedIn posts by keyword
   --search \"query\" --type people Search LinkedIn people by keyword
   --search \"query\" --engage      Search AND engage with results
@@ -59,7 +60,7 @@ def setup_driver():
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="LinkedIntel — LinkedIn Engagement Intelligence")
-    parser.add_argument("--mode", choices=["feed", "replies", "priority", "full", "stats", "contact"],
+    parser.add_argument("--mode", choices=["feed", "replies", "priority", "sync", "full", "stats", "contact"],
                         default="priority", help="Operating mode")
     parser.add_argument("--search", type=str, default="",
                         help="Search LinkedIn for posts/people (e.g. 'founder burnout')")
@@ -112,6 +113,11 @@ def main():
         print(f"   Total interactions:  {stats['total_interactions']}")
         print(f"   Replies received:    {stats['total_replies_received']}")
         print(f"   DB size:             {stats['database_size_kb']} KB")
+        return
+
+    if args.mode == "sync":
+        from core.sheets_sync import sync_to_sheets
+        sync_to_sheets()
         return
 
     if args.mode == "contact":
@@ -191,6 +197,13 @@ def main():
         if args.mode in ("feed", "replies", "full"):
             cm.recalculate_all()
             cm.print_priority_list(min(args.list, 10))
+            # Auto-sync to Google Sheets
+            try:
+                from core.sheets_sync import sync_to_sheets
+                print("\n📊 Auto-syncing to Google Sheets...")
+                sync_to_sheets()
+            except Exception as e:
+                print(f"   ⚠️  Sheet sync skipped: {e}")
 
         print("\nCompleted successfully!")
 

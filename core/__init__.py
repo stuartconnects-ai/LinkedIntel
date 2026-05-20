@@ -23,6 +23,7 @@ from .messenger import LinkedInMessenger
 from .reply_tracker import ReplyTracker
 from .contact_manager import ContactManager
 from .search_engine import SearchEngine
+from .sheets_sync import sync_to_sheets, sync_from_sheets
 
 __all__ = [
     'LinkedInAuth',
@@ -34,4 +35,6 @@ __all__ = [
     'ReplyTracker',
     'ContactManager',
     'SearchEngine',
+    'sync_to_sheets',
+    'sync_from_sheets',
 ]
