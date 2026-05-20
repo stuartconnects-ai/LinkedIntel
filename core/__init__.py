@@ -22,6 +22,7 @@ from .connect import LinkedInConnect
 from .messenger import LinkedInMessenger
 from .reply_tracker import ReplyTracker
 from .contact_manager import ContactManager
+from .search_engine import SearchEngine
 
 __all__ = [
     'LinkedInAuth',
@@ -32,4 +33,5 @@ __all__ = [
     'LinkedInMessenger',
     'ReplyTracker',
     'ContactManager',
+    'SearchEngine',
 ]
